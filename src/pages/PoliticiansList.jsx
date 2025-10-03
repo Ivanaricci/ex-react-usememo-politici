@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import PoliticianCard from '../components/PoliticianCard';
 
 const PoliticiansList = () => {
     const [politicians, setPoliticians] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [search, setSearch] = useState("")
 
     useEffect(() => {
         const fetchPoliticians = async () => {
@@ -25,15 +26,33 @@ const PoliticiansList = () => {
         fetchPoliticians();
     }, []);
 
+    // array filtrato
+    const filteredPoliticians = useMemo(() => {
+        return politicians.filter(
+            (p) =>
+                p.name.toLowerCase().includes(search.toLowerCase()) ||
+                p.biography.toLowerCase().includes(search.toLowerCase())
+        );
+    }, [politicians, search]);
+
     if (loading) return <p>Caricamento...</p>;
     if (error) return <p>Errore: {error}</p>;
 
     return (
-        <div className='politicians-container'>
-            {politicians.map((politician) => (
-                <PoliticianCard key={politician.id} politician={politician} />
-            ))}
-        </div>
+        <>
+            <div>
+                <input type="text"
+                    placeholder='Cerca per nome o biografia'
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className='search-input' />
+            </div>
+            <div className='politicians-container'>
+                {filteredPoliticians.map((politician) => (
+                    <PoliticianCard key={politician.id} politician={politician} />
+                ))}
+            </div>
+        </>
     );
 }
 
