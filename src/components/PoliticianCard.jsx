@@ -1,6 +1,9 @@
 import React from 'react';
 
+
 const PoliticianCard = ({ politician }) => {
+
+    console.log("Renderizzo card:", politician.name)
     return (
         <div className='politician-card'>
             <img
@@ -15,4 +18,4 @@ const PoliticianCard = ({ politician }) => {
     );
 }
 
-export default PoliticianCard;
+export default React.memo(PoliticianCard);
